@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "package": "ladysnake.satin.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "plugin": "ladysnake.satin.mixin.SatinMixinPlugin",
+  "client": [
+    "client.blockrenderlayer.RenderLayerMixin",
+    "client.blockrenderlayer.WorldRendererMixin",
+    "client.event.GameRendererMixin",
+    "client.event.MinecraftClientMixin",
+    "client.event.WorldRendererMixin",
+    "client.gl.CoreShaderMixin",
+    "client.gl.CustomFormatFramebufferMixin",
+    "client.gl.CustomFormatPostEffectProcessorMixin",
+    "client.gl.DepthGlFramebufferMixin",
+    "client.gl.GlUniformMixin",
+    "client.gl.JsonEffectGlShaderMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
