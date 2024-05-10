@@ -44,9 +44,6 @@ public class Satin {
 
     public static void init() {
         ResolutionChangeCallback.EVENT.register(ReloadableShaderEffectManager.INSTANCE);
-        if (FabricLoader.getInstance().isModLoaded("optifabric")) {
-            LOGGER.warn("[Satin] Optifine present in the instance, custom entity post process shaders will not work");
-        }
     }
 
 }

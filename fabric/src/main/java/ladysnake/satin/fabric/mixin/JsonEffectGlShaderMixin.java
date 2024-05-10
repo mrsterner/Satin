@@ -17,9 +17,13 @@
  */
 package ladysnake.satin.fabric.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import ladysnake.satin.impl.SamplerAccess;
 import net.minecraft.client.gl.JsonEffectShaderProgram;
 import net.minecraft.client.gl.ShaderStage;
+import net.minecraft.resource.ResourceFactory;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -62,18 +66,8 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
 
     /**
      * Fix identifier creation to allow different namespaces
-     *
-     * <p>Why a redirect ?
-     * <ul>
-     * <li>Because letting the identifier be built will throw an exception, so no ModifyVariable</li>
-     * <li>Because we need to access the original id, so no ModifyArg (alternatively we could use 2 injections and a ThreadLocal but:)</li>
-     * <li>Because we assume other people who may want to do the same change can use this library</li>
-     * </ul>
-     * @param arg the string passed to the redirected Identifier constructor
-     * @param id the actual id passed as an argument to the method
-     * @return a new Identifier
      */
-    @Redirect(
+    @WrapOperation(
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",
@@ -81,20 +75,15 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
             ),
             method = "<init>"
     )
-    Identifier constructProgramIdentifier(String arg, ResourceManager unused, String id) {
+    Identifier constructProgramIdentifier(String arg, Operation<Identifier> original, @Local(argsOnly = true) String id) {
         if (!id.contains(":")) {
-            return new Identifier(arg);
+            return original.call(arg);
         }
         Identifier split = new Identifier(id);
         return new Identifier(split.getNamespace(), "shaders/program/" + split.getPath() + ".json");
     }
 
-    /**
-     * @param arg the string passed to the redirected Identifier constructor
-     * @param id the actual id passed as an argument to the method
-     * @return a new Identifier
-     */
-    @Redirect(
+    @WrapOperation(
             at = @At(
                     value = "NEW",
                     target = "net/minecraft/util/Identifier",
@@ -102,9 +91,9 @@ public abstract class JsonEffectGlShaderMixin implements SamplerAccess {
             ),
             method = "loadEffect"
     )
-    private static Identifier constructProgramIdentifier(String arg, ResourceManager unused, ShaderStage.Type shaderType, String id) {
+    private static Identifier constructProgramIdentifier(String arg, Operation<Identifier> original, @Local(argsOnly = true) ShaderStage.Type shaderType,  @Local(argsOnly = true) String id) {
         if (!arg.contains(":")) {
-            return new Identifier(arg);
+            return original.call(arg);
         }
         Identifier split = new Identifier(id);
         return new Identifier(split.getNamespace(), "shaders/program/" + split.getPath() + shaderType.getFileExtension());

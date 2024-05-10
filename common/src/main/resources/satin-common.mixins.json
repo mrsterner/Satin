@@ -14,8 +14,7 @@
     "client.gl.CustomFormatFramebufferMixin",
     "client.gl.CustomFormatPostEffectProcessorMixin",
     "client.gl.DepthGlFramebufferMixin",
-    "client.gl.GlUniformMixin",
-    "client.gl.JsonEffectGlShaderMixin"
+    "client.gl.GlUniformMixin"
   ],
   "mixins": [
   ],
